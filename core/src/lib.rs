@@ -1,4 +1,11 @@
-use std::arch::aarch64::uint8x8_t;
+pub mod export;
+pub mod draw;
+
+#[derive(Clone, Copy)]
+pub struct Coordinate {
+    pub x: usize,
+    pub y: usize
+}
 
 #[derive(Clone, Copy)]
 pub struct RGBA {
@@ -14,18 +21,16 @@ pub struct Buffer {
     pixels: Vec<RGBA>,
 }
 
-
-
 impl Buffer {
     pub fn new(width: usize, height: usize) -> Self {
         Self {width, height, pixels: Vec::new()}
     }
 
-    pub fn get_pixel(&self, x: usize, y: usize) -> RGBA {
+    pub fn get_pixel(&self, Coordinate {x, y}: Coordinate) -> RGBA {
         self.pixels[self.get_index(x, y)]
     }
 
-    pub fn set_pixels(&mut self, x: usize, y: usize, value: RGBA) {
+    pub fn set_pixels(&mut self, Coordinate {x, y}: Coordinate, value: RGBA) {
         let i: usize = self.get_index(x, y);
         self.pixels[i] = value;
     }
@@ -33,7 +38,4 @@ impl Buffer {
     fn get_index(&self, x: usize, y: usize) -> usize {
         self.width * y + x
     }
-
-
 }
-
