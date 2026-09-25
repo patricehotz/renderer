@@ -4,8 +4,8 @@ pub mod draw;
 
 #[derive(Clone, Copy)]
 pub struct Coordinate {
-    pub x: usize,
-    pub y: usize
+    pub x: i32,
+    pub y: i32
 }
 
 #[derive(Clone, Copy)]
@@ -34,22 +34,25 @@ impl Buffer {
     }
 
     pub fn get_pixel(&self, Coordinate {x, y}: Coordinate) -> RGBA {
-        self.pixels[self.get_index(x, y)]
+        self.pixels[self.get_index(x, y).unwrap()]
     }
 
     pub fn set_pixels(&mut self, Coordinate {x, y}: Coordinate, value: RGBA) {
-        if x > self.width || y > self.height { return; }
-        let i: usize = self.get_index(x, y);
-        self.pixels[i] = value;
+        if let Some(i) = self.get_index(x, y) {
+            self.pixels[i] = value;
+        };
     }
 
-    fn get_index(&self, x: usize, y: usize) -> usize {
-        self.width * y + x
+    fn get_index(&self, x: i32, y: i32) -> Option<usize> {
+        if x < self.width as i32 && x >= 0 && y < self.height as i32 && y >= 0 {
+            return Some(self.width * y as usize + x as usize)
+        }
+        None
     }
 }
 
 impl Vec2 {
-        pub fn calc_vector(a: Coordinate, b: Coordinate) -> Vec2 {
+    pub fn calc_vector(a: Coordinate, b: Coordinate) -> Vec2 {
         Vec2 { x: b.x as f32 - a.x as f32, y:  b.y as f32 - a.y as f32}
     }
 }

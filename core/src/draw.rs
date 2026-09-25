@@ -3,8 +3,8 @@ use crate::{Buffer, Coordinate, RGBA, Vec2};
 pub fn gradiant(buffer: &mut Buffer, from_p: Coordinate, from_c: RGBA, to_p: Coordinate, to_c: RGBA) {
     let d = Vec2::calc_vector(from_p, to_p);
 
-    for y in 0..buffer.height {
-        for x in 0..buffer.width {
+    for y in 0..buffer.height as i32 {
+        for x in 0..buffer.width as i32 {
             let pos = Coordinate{x,y};
             let v = Vec2::calc_vector(from_p, pos);
             let t = (d*v)/(d*d);
