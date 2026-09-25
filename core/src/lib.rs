@@ -1,3 +1,4 @@
+use std::ops::Mul;
 pub mod export;
 pub mod draw;
 
@@ -7,6 +8,7 @@ pub struct Coordinate {
     pub y: usize
 }
 
+#[derive(Clone, Copy)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
@@ -36,11 +38,26 @@ impl Buffer {
     }
 
     pub fn set_pixels(&mut self, Coordinate {x, y}: Coordinate, value: RGBA) {
+        if x > self.width || y > self.height { return; }
         let i: usize = self.get_index(x, y);
         self.pixels[i] = value;
     }
 
     fn get_index(&self, x: usize, y: usize) -> usize {
         self.width * y + x
+    }
+}
+
+impl Vec2 {
+        pub fn calc_vector(a: Coordinate, b: Coordinate) -> Vec2 {
+        Vec2 { x: b.x as f32 - a.x as f32, y:  b.y as f32 - a.y as f32}
+    }
+}
+
+impl Mul<Vec2> for Vec2 {
+    type Output = f32;
+
+    fn mul(self, rhs: Vec2) -> Self::Output {
+        self.x * rhs.x + self.y * rhs.y
     }
 }
