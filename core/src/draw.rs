@@ -1,6 +1,6 @@
-use crate::{Buffer, Coordinate, RGBA, Vec2};
+use crate::{Coordinate, FrameBuffer, RGBA, Vec2 };
 
-pub fn gradiant(buffer: &mut Buffer, from_p: Coordinate, from_c: RGBA, to_p: Coordinate, to_c: RGBA) {
+pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGBA, to_p: Coordinate, to_c: RGBA) {
     let d = Vec2::calc_vector(from_p, to_p);
 
     for y in 0..buffer.height as i32 {
@@ -18,4 +18,15 @@ pub fn gradiant(buffer: &mut Buffer, from_p: Coordinate, from_c: RGBA, to_p: Coo
             buffer.set_pixels(Coordinate {x, y}, res)
         }
     };
+}
+
+pub fn line(buffer: &mut FrameBuffer ,a: Coordinate, b: Coordinate, color: RGBA) {
+    let vec = Vec2::calc_vector(a, b);
+    let length = vec.calc_length() as u32;
+
+    for t in 0..length {
+        let t: f32 = t as f32 / length as f32;
+        let p = a + vec * t;
+        buffer.set_pixels(p, color)
+    }
 }

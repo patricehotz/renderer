@@ -1,7 +1,7 @@
-use crate::{Buffer, Coordinate, RGBA};
+use crate::{FrameBuffer, Coordinate, RGBA};
 use std::fmt::Write;
 
-pub fn ppm(buffer: &Buffer, dir: &str) {
+pub fn ppm(buffer: &FrameBuffer, dir: &str) {
     let mut value = format!("P3\n{} {}\n255\n", buffer.width, buffer.height);
     for y in 0..buffer.height {
         for x in 0..buffer.width {
