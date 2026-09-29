@@ -21,6 +21,8 @@ pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGBA, to_p
 }
 
 pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, color: RGBA) {
+    clip(&mut a, &mut b, buffer.width, buffer.height);
+
     if a.x > b.x {
         std::mem::swap(&mut a, &mut b);
     }
@@ -37,4 +39,42 @@ pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, colo
     }
 
     buffer.set_pixels(b, color)
+}
+
+pub fn clip(a: &mut Coordinate, b: &mut Coordinate,  width: usize, height: usize) {
+    let v = Vec2::calc_vector(*a, *b);
+    if a.x < 0 {
+        a.x = calc_clamp_negative(a.x, b.x, v)
+    }
+    if b.x < 0 {
+        b.x = calc_clamp_negative(b.x, a.x, v)
+    }
+    if a.y < 0 {
+        a.y = calc_clamp_negative(a.y, b.y, v)
+    }
+    if b.y < 0 {
+        b.y = calc_clamp_negative(b.y, a.y, v)
+    }
+    if a.x > width as i32 -1 {
+        a.x = calc_clamp_positive(a.x, b.x, v, width as i32-1)
+    }
+    if b.x > width as i32 -1 {
+        b.x = calc_clamp_positive(b.x, a.x, v, width as i32-1)
+    }
+    if a.y > width as i32 -1 {
+        a.y = calc_clamp_positive(a.y, b.y, v, height as i32-1)
+    }
+    if b.y > width as i32 -1 {
+        b.y = calc_clamp_positive(b.y, a.y, v, height as i32-1)
+   }
+}
+           
+fn calc_clamp_negative(a: i32, b: i32, v: Vec2) -> i32 {
+    let t = 0 as f32 - (a as f32) / (b - a) as f32;
+    (a as f32 * t) as i32
+}
+
+fn calc_clamp_positive(a: i32, b: i32, v: Vec2, max: i32) -> i32 {
+    let t = max as f32 - (a as f32) / (b - a) as f32;
+    (a as f32 * t) as i32
 }

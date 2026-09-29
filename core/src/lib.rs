@@ -44,6 +44,10 @@ impl FrameBuffer {
         };
     }
 
+    pub fn set_pixels_unchecked(&mut self, Coordinate {x, y}: Coordinate, value: RGBA) {
+            self.pixels[self.width * y as usize + x as usize] = value;
+    }
+
     fn get_index(&self, x: i32, y: i32) -> Option<usize> {
         if x < self.width as i32 && x >= 0 && y < self.height as i32 && y >= 0 {
             return Some(self.width * y as usize + x as usize)
@@ -59,6 +63,46 @@ impl Vec2 {
 
     pub fn calc_length(&self) -> i32 {
         ((self.x.pow(2) + self.y.pow(2)) as f32).sqrt().round() as i32
+    }
+}
+
+impl Coordinate {
+    pub fn clamp(a: &mut Coordinate, b: &mut Coordinate,  width: usize, height: usize) {
+        let v = Vec2::calc_vector(*a, *b);
+        if a.x < 0 {
+            a.x = Coordinate::calc_clamp_negative(a.x, b.x, v)
+        }
+        if b.x < 0 {
+            b.x = Coordinate::calc_clamp_negative(b.x, a.x, v)
+        }
+        if a.y < 0 {
+            a.y = Coordinate::calc_clamp_negative(a.y, b.y, v)
+        }
+        if b.y < 0 {
+            b.y = Coordinate::calc_clamp_negative(b.y, a.y, v)
+        }
+        if a.x > width as i32 -1 {
+            a.x = Coordinate::calc_clamp_positive(a.x, b.x, v, width as i32-1)
+        }
+        if b.x > width as i32 -1 {
+            b.x = Coordinate::calc_clamp_positive(b.x, a.x, v, width as i32-1)
+        }
+        if a.y > width as i32 -1 {
+            a.y = Coordinate::calc_clamp_positive(a.y, b.y, v, width as i32-1)
+        }
+        if b.y > width as i32 -1 {
+            b.y = Coordinate::calc_clamp_positive(b.y, a.y, v, width as i32-1)
+        }
+    }
+           
+    fn calc_clamp_negative(a: i32, b: i32, v: Vec2) -> i32 {
+        let t = 0 as f32 - (a as f32) / (b - a) as f32;
+        (a as f32 * t) as i32
+    }
+
+    fn calc_clamp_positive(a: i32, b: i32, v: Vec2, max: i32) -> i32 {
+        let t = max as f32 - (a as f32) / (b - a) as f32;
+        (a as f32 * t) as i32
     }
 }
 
