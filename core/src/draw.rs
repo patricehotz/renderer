@@ -21,33 +21,19 @@ pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGBA, to_p
 }
 
 pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, color: RGBA) {
-    let mut vec = Vec2::calc_vector(a, b);
-    let steep = vec.x.abs() < vec.y.abs();
-
-    if steep {
-        std::mem::swap(&mut vec.x, &mut vec.y);
+    if a.x > b.x {
+        std::mem::swap(&mut a, &mut b);
     }
 
-    if vec.x <= 0 {
-        vec = vec * -1;
-        std::mem::swap(&mut a, &mut b)
-    }
+    let vec = Vec2::calc_vector(a, b);
+    let steps =  vec.x.abs().max(vec.y.abs());
+    let step_x: f32 = vec.x as f32 / steps as  f32;
+    let step_y: f32 = vec.y as f32 / steps as f32;
 
-    let y_direction = if vec.y < 0 {-1} else {1};
-
-    //(vec.y / vec.x) * 2 * vec.x = 2 * vec.y
-    let step_y  = vec.y.abs() * 2;
-    let mut current_step_y = 0;
-
-    for _ in 0..vec.x {
-        if current_step_y >= vec.x{
-            if steep {a.x += y_direction} else {a.y += y_direction}
-            current_step_y -= 2 * vec.x
-        }
-        current_step_y += step_y;
-        buffer.set_pixels(a, color);
-
-        if steep {a.y += 1} else {a.x += 1}
+    for t in 0..steps {
+        let v = Vec2 {x:( t as f32 * step_x).round() as i32, y: ( t as f32 * step_y).round() as i32};
+        let p = a + v ;
+        buffer.set_pixels(p, color)
     }
 
     buffer.set_pixels(b, color)
