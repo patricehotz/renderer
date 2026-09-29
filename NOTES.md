@@ -32,8 +32,8 @@ also i couldnt test the whole time if my gradiant logic and all other stuff work
 
 Drawing a line is harder than you think. claude gave me a link to a guide that explores the different attempts of trying to draw a line. because its harder than you think.
 I then tried to implement it on my own without the guide and after some confusion i finally cracked the code. i managed to draw a line.
-the code ended up the pe the first step of the tutorial https://haqr.eu/tinyrenderer/bresenham/ and explores how it workes but it doesent look all to pretty. 
-next illl work with the tutorial on how we can make it more accurate.
+the code ended up the be already flawless. except to the fact it uses float divisions. thats something the tutorial gets rid of https://haqr.eu/tinyrenderer/bresenham/ and explores how it workes but it doesent look all to pretty. 
+next ill work with the tutorial on how we can make it more accurate.
 ```rust
 pub fn line(buffer: &mut FrameBuffer ,a: Coordinate, b: Coordinate, color: RGBA) {
     let vec = Vec2::calc_vector(a, b);
