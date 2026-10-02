@@ -20,8 +20,7 @@ pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGBA, to_p
     };
 }
 
-pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, color: RGBA) {
-    clip(&mut a, &mut b, buffer.width, buffer.height);
+pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, color: RGBA)  {
 
     if a.x > b.x {
         std::mem::swap(&mut a, &mut b);
@@ -39,42 +38,67 @@ pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, colo
     }
 
     buffer.set_pixels(b, color)
+
 }
 
-pub fn clip(a: &mut Coordinate, b: &mut Coordinate,  width: usize, height: usize) {
-    let v = Vec2::calc_vector(*a, *b);
-    if a.x < 0 {
-        a.x = calc_clamp_negative(a.x, b.x, v)
+const TOP:   u8 = 0b0001;
+const LEFT:  u8 = 0b0010;
+const BOTTOM: u8 = 0b0100;
+const RIGHT: u8 = 0b1000;
+const NEGATIVE: u8 = TOP | LEFT;
+
+pub fn clip(a: &mut Coordinate, b: &mut Coordinate,  width: usize, height: usize) -> bool {
+    let bounds_a = get_bounds(*a, width, height);
+    let bounds_b = get_bounds(*b, width, height);
+    let mut t_enter = 0.0;
+    let mut t_leave = 0.0;
+
+
+    if (bounds_a | bounds_b) <= 0  { true; }
+    if bounds_a & bounds_b > 0 { false; }
+
+    if bounds_a & TOP > 0 {
+        t_enter = calc_t_enter(a.y, b.y);
     }
-    if b.x < 0 {
-        b.x = calc_clamp_negative(b.x, a.x, v)
+    if bounds_a & LEFT > 0 {
+        t_enter = t_enter.max(calc_t_enter(a.x, b.x))
     }
-    if a.y < 0 {
-        a.y = calc_clamp_negative(a.y, b.y, v)
+    if bounds_a & BOTTOM > 0 {
+        t_enter = t_enter.max(calc_t_leave(a.y, b.y, height-1))
     }
-    if b.y < 0 {
-        b.y = calc_clamp_negative(b.y, a.y, v)
+    if bounds_a & RIGHT > 0 {
+        t_enter = t_enter.max(calc_t_leave(a.x, b.x, width-1))
     }
-    if a.x > width as i32 -1 {
-        a.x = calc_clamp_positive(a.x, b.x, v, width as i32-1)
+    if bounds_b & TOP > 0 {
+        t_enter = calc_t_enter(b.y, a.y);
     }
-    if b.x > width as i32 -1 {
-        b.x = calc_clamp_positive(b.x, a.x, v, width as i32-1)
+    if bounds_b & LEFT > 0 {
+        t_enter = t_enter.max(calc_t_enter(b.x, a.x))
     }
-    if a.y > width as i32 -1 {
-        a.y = calc_clamp_positive(a.y, b.y, v, height as i32-1)
+    if bounds_b & BOTTOM > 0 {
+        t_leave = calc_t_leave(b.y, a.y, height-1)
     }
-    if b.y > width as i32 -1 {
-        b.y = calc_clamp_positive(b.y, a.y, v, height as i32-1)
-   }
-}
-           
-fn calc_clamp_negative(a: i32, b: i32, v: Vec2) -> i32 {
-    let t = 0 as f32 - (a as f32) / (b - a) as f32;
-    (a as f32 * t) as i32
+    if bounds_b & RIGHT > 0 {
+        t_leave = t_leave.max(calc_t_leave(b.x, a.x, width-1))
+    }
+
+    if t_enter > t_leave
+
 }
 
-fn calc_clamp_positive(a: i32, b: i32, v: Vec2, max: i32) -> i32 {
-    let t = max as f32 - (a as f32) / (b - a) as f32;
-    (a as f32 * t) as i32
+fn get_bounds(p: Coordinate, width: usize, height: usize) -> u8 {
+    let mut result: u8 = 0b0000;
+    if p.y < 0 { result |= TOP }
+    if p.x < 0 { result |= LEFT }
+    if p.y > height as i32 {  result |= BOTTOM }
+    if p.x > width as i32 {  result |= RIGHT }
+    result
+}
+
+fn calc_t_enter(a: i32, b: i32) -> f32 {
+    - (a as f32) / (b - a) as f32
+}
+
+fn calc_t_leave(a: i32, b: i32, max: usize) -> f32 {
+    max as f32 - (a as f32) / (b - a) as f32
 }
