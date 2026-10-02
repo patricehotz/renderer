@@ -41,6 +41,6 @@ fn optimisations_test() {
 
         line(&mut buffer, a, b, color);
     }
-    export::ppm(&buffer, "/Users/photz/repos/renderer/gradient.ppm");
-    //export::ppm(&buffer, "/home/paho/git/renderer/gradient.ppm");
+    //export::ppm(&buffer, "/Users/photz/repos/renderer/gradient.ppm");
+    export::ppm(&buffer, "/home/paho/git/renderer/gradient.ppm");
 }

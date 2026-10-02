@@ -189,3 +189,19 @@ after asking claude he was also suprised and thought the same. this way we add d
 so its probably still way more effiecient on older cpus and arduinos etc.
 
 as of now i decided to commit it and go back to the float DDA as i find it better to read. but i will keep it in the back of my head for when i run it via webasembly to see what is faster
+
+clipping (Liang–Barsky style, with outcodes) + unchecked writes (1M random lines, 400x400, release):
+
+```
+┌────────────────────────────────────────────────┬────────┐
+│                    Version                     │  Time  │
+├────────────────────────────────────────────────┼────────┤
+│ DDA, check per pixel (65b2252)                 │ 212 ms │
+├────────────────────────────────────────────────┼────────┤
+│ DDA + clipping + unchecked writes (74b3242)    │  89 ms │
+└────────────────────────────────────────────────┴────────┘
+```
+
+−58%. bigger gain than set_pixels alone (~58 ms), because lines fully outside skip the whole loop
+and partly outside lines only compute their visible pixels.
+same image except rounding at the clipped endpoints (a line can shift by 1 pixel where it got clipped).
