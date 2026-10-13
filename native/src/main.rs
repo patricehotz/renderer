@@ -1,13 +1,13 @@
 use renderer_core::{FrameBuffer, Coordinate, RGBA, export};
-use renderer_core::draw::{gradiant, line};
+use renderer_core::draw::{gradiant, line, triangle};
 
 fn main() {
-    let mut buffer = FrameBuffer::new(420, 420);
-    gradiant(&mut buffer, Coordinate {x: 20, y: 20}, RGBA {r: 255, g: 0, b:0, a: 100}, Coordinate {x: 400, y:400},  RGBA {r: 0, g: 0, b: 255, a: 100});
-    line(&mut buffer, Coordinate {x: 20, y: 20}, Coordinate {x: 300, y: 120}, RGBA {r: 0, g: 0, b: 0, a: 100});
-    //export::ppm(&buffer, "/Users/photz/repos/renderer/gradient.ppm");
+    let mut buffer = FrameBuffer::new(120, 120);
+    triangle(&mut buffer, Coordinate {x: 12, y: 12}, Coordinate {x: 80, y: 30},Coordinate {x: 100, y: 80}, RGBA {r: 255, g: 0, b:0, a: 255});
+    triangle(&mut buffer, Coordinate {x: 40, y: 30}, Coordinate {x: 40, y: 110},Coordinate {x: 58, y: 105}, RGBA {r: 0, g: 0, b:255, a: 255});
+    triangle(&mut buffer, Coordinate {x: 88, y: 60}, Coordinate {x: 64, y: 119},Coordinate {x: 110, y: 100}, RGBA {r: 0, g: 255, b:0, a: 255});
     //export::ppm(&buffer, "/home/paho/git/renderer/gradient.ppm");
-    optimisations_test()
+    export::ppm(&buffer, "/Users/photz/repos/renderer/gradient.ppm");
 }
 
 fn optimisations_test() {

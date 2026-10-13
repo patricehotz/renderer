@@ -29,9 +29,14 @@ pub struct FrameBuffer {
     pixels: Vec<RGBA>,
 }
 
+pub struct BBox {
+    min: Coordinate,
+    max: Coordinate,
+}
+
 impl FrameBuffer {
     pub fn new(width: usize, height: usize) -> Self {
-        Self {width, height, pixels: vec![RGBA{r: 255, g: 255, b: 255, a: 100}; width * height ]}
+        Self {width, height, pixels: vec![RGBA{r: 0, g: 0, b: 0, a: 0}; width * height ]}
     }
 
     pub fn get_pixel(&self, Coordinate {x, y}: Coordinate) -> RGBA {
@@ -53,6 +58,12 @@ impl FrameBuffer {
             return Some(self.width * y as usize + x as usize)
         }
         None
+    }
+}
+
+impl BBox {
+    pub fn new (a: Coordinate, b: Coordinate, c: Coordinate) -> Self {
+        Self {min: Coordinate { x: a.x.min(b.x.min(c.x)), y: a.y.min(b.y.min(c.y))}, max: Coordinate {x: a.x.max(b.x.max(c.x)), y: a.y.max(b.y.max(c.y))}}
     }
 }
 

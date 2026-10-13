@@ -43,6 +43,14 @@ pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, colo
     buffer.set_pixels_unchecked(b, color)
 }
 
+pub fn triangle(buffer: &mut FrameBuffer, a: Coordinate, b: Coordinate, c: Coordinate, color: RGBA) {
+    line(buffer, a, b, color);
+    line(buffer, b, c, color);
+    line(buffer, c, a, color);
+}
+
+
+
 const TOP:   u8 = 0b0001;
 const LEFT:  u8 = 0b0010;
 const BOTTOM: u8 = 0b0100;
