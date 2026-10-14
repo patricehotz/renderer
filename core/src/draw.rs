@@ -1,4 +1,4 @@
-use crate::{Coordinate, FrameBuffer, RGBA, Vec2 };
+use crate::{BBox, Coordinate, FrameBuffer, Vec2, RGBA};
 
 pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGBA, to_p: Coordinate, to_c: RGBA) {
     let d = Vec2::calc_vector(from_p, to_p);
@@ -42,14 +42,6 @@ pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, colo
 
     buffer.set_pixels_unchecked(b, color)
 }
-
-pub fn triangle(buffer: &mut FrameBuffer, a: Coordinate, b: Coordinate, c: Coordinate, color: RGBA) {
-    line(buffer, a, b, color);
-    line(buffer, b, c, color);
-    line(buffer, c, a, color);
-}
-
-
 
 const TOP:   u8 = 0b0001;
 const LEFT:  u8 = 0b0010;
@@ -115,4 +107,29 @@ fn calc_t_min(a: i32, b: i32) -> f32 {
 
 fn calc_t_max(a: i32, b: i32, max: usize) -> f32 {
     (max as f32 - (a as f32)) / (b - a) as f32
+}
+
+pub fn triangle(buffer: &mut FrameBuffer, a: Coordinate, b: Coordinate, c: Coordinate, color: RGBA) {
+    let b_box = BBox::new(a,b,c);
+    let ab = Vec2::calc_vector(a, b);
+    let ac = Vec2::calc_vector(a, c);
+    let total_area = ab.signed_c_product(ac);
+
+    for y in b_box.min.y..b_box.max.y {
+        for x in b_box.min.x..b_box.max.x {
+            let p = Coordinate {x, y};
+            let pa = Vec2::calc_vector(p, a);
+            let pb = Vec2::calc_vector(p, b);
+            let pc = Vec2::calc_vector(p, c);
+
+            let alpha = pa.signed_c_product(pb) as f32 / total_area as f32;
+            let beta = pb.signed_c_product(pc) as f32 / total_area as f32;
+            let gamma = pc.signed_c_product(pa) as f32 / total_area as f32;
+
+            if alpha < 0.0 || beta < 0.0 || gamma < 0.0 {continue}
+
+            buffer.set_pixels(Coordinate {x, y}, color)
+
+        }
+    }
 }

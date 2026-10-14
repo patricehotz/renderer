@@ -1,5 +1,7 @@
 use std::ops::Mul;
 use std::ops::Add;
+use std::sync::WaitTimeoutResult;
+
 pub mod export;
 pub mod draw;
 
@@ -74,6 +76,14 @@ impl Vec2 {
 
     pub fn calc_length(&self) -> i32 {
         ((self.x.pow(2) + self.y.pow(2)) as f32).sqrt().round() as i32
+    }
+
+    pub fn c_product(&self, b: Vec2) -> u32 {
+        (self.x * b.y - self.y * b.x).abs() as u32
+    }
+
+    pub fn signed_c_product(&self, b: Vec2) -> i32 {
+        self.x * b.y - self.y * b.x
     }
 }
 
