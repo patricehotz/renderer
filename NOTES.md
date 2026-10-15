@@ -205,3 +205,34 @@ clipping (Liang–Barsky style, with outcodes) + unchecked writes (1M random lin
 −58%. bigger gain than set_pixels alone (~58 ms), because lines fully outside skip the whole loop
 and partly outside lines only compute their visible pixels.
 same image except rounding at the clipped endpoints (a line can shift by 1 pixel where it got clipped).
+
+## 15.10.26 
+
+
+**Trianglesss**
+
+after a break from this project the last 3 days over 5h i dedicated myself to triangles. and suprisingly its easier than i thought.
+after the line dry line optimisiations i lost a little motivation or needed a little break because it thought triangles would be harder. but as it seems its not that hard.
+i needed to watch some videos about barycentric coordinates and read wikipedia till i understood how barycentric coordinates but after that it was a cake.
+one thing i also had trouble to understand was how the guide skips backfacing trianlges in the model.
+it does so by checking the direction of the vector, and that didnt make sense to me as this has nothing to do with if its on the bakc or front.
+but now i know that 3D models are always going in one direction around. like a running track. the one in the front run from left to right and as soon as they are on the other side, from the same perspective they walk from right to left.
+that makes real good sense and i like such stuff thats just smart, i looveee such stuff.
+
+one problem that remains is that two triangles that are facing forward can draw over each other even tho one is more in front and thus should be drawn above. anyways:
+![img_1.png](img_1.png)
+
+also one thing im not so sure as of now: is this efficient?.
+for me the scan line method. but i guess when a z coordinate comes into play its useless anyway. 
+and another theorie i have is that the scanline method has depending loops. like the line has to be drawn with a t while the barycentric method is completly independend per pixel so it can be ran in parallel
+
+**RGB Triangle**
+in the afternoon i have continued the guide. and there he explains more about barycentric coordinates how they work etc. if i knew that i wouldn have studied the stuff on my own xD
+anyway i skipped all and jumped right to the "homework" he gave. to create a rgb triangle.
+and due to me having really understood every line of code i wrote so far and really brained myself into every detail it showed its value as i almost oneshot the rgb triangle
+![img_2.png](img_2.png)
+only bug was already there i just havent noticed. 
+the wheight where falsley named so at my first try the blend was good but the wrong colors where asssined to the corners.
+but that was fixed quickly
+
+now i also see why i used barycentric coordinates. they give you the weight ofc to to such things as gradients etc.

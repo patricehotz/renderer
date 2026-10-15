@@ -1,46 +1,75 @@
+use std::fs::{read_to_string, File};
+use std::io::{self, BufRead};
 use renderer_core::{FrameBuffer, Coordinate, RGBA, export};
-use renderer_core::draw::{gradiant, line, triangle};
+use renderer_core::draw::{gradiant, line, triangle, Point, Triangle};
+
+const WIDTH:usize = 500;
+const HEIGHT: usize = 500;
 
 fn main() {
-    let mut buffer = FrameBuffer::new(120, 120);
-    triangle(&mut buffer, Coordinate {x: 12, y: 12}, Coordinate {x: 80, y: 30},Coordinate {x: 100, y: 80}, RGBA {r: 255, g: 0, b:0, a: 255});
-    triangle(&mut buffer, Coordinate {x: 40, y: 30}, Coordinate {x: 40, y: 110},Coordinate {x: 58, y: 105}, RGBA {r: 0, g: 0, b:255, a: 255});
-    triangle(&mut buffer, Coordinate {x: 88, y: 60}, Coordinate {x: 64, y: 119},Coordinate {x: 110, y: 100}, RGBA {r: 0, g: 255, b:0, a: 255});
-    //export::ppm(&buffer, "/home/paho/git/renderer/gradient.ppm");
+    let mut buffer = FrameBuffer::new(WIDTH, HEIGHT);
+    // let mut points = Vec::new();
+    // let centre_x = WIDTH as f32 * 0.5;
+    // let centre_y = HEIGHT as f32 * 0.5;
+    //
+    // let file = File::open("/Users/photz/repos/renderer/obj/african_head/african_head.obj").unwrap();
+    // let lines = io::BufReader::new(file).lines();
+    // for line in lines.map_while(Result::ok) {
+    //     if line.starts_with("v") {
+    //         let res = line.split_whitespace().collect::<Vec<&str>>();
+    //         let x = (res[1].parse::<f32>().unwrap() * centre_x).round() as i32 + centre_x as i32 ;
+    //         let y = (res[2].parse::<f32>().unwrap() * centre_y).round() as i32 * -1 + centre_y as i32;
+    //         points.push(Coordinate {x, y})
+    //     }
+    //     else if line.starts_with("f") {
+    //         let res = line.split_whitespace().collect::<Vec<&str>>();
+    //         let a = res[1].split('/').collect::<Vec<&str>>()[0].parse::<usize>().unwrap();
+    //         let b = res[2].split('/').collect::<Vec<&str>>()[0].parse::<usize>().unwrap();
+    //         let c = res[3].split('/').collect::<Vec<&str>>()[0].parse::<usize>().unwrap();
+    //         triangle(&mut buffer, points[a-1], points[b-1], points[c-1], RGBA {r: rand::random::<u8>(), g: rand::random::<u8>(), b: rand::random::<u8>(), a: 0})
+    //     }
+    // }
+
+    let rgb_triangle = Triangle {
+        a: Point {
+            coordinate: Coordinate {
+                x: 250,
+                y: 10,
+            },
+            color: RGBA {
+                r: 255,
+                g: 0,
+                b: 0,
+                a: 100
+            }
+        },
+        b: Point {
+            coordinate: Coordinate {
+                x: 10,
+                y: 490,
+            },
+            color: RGBA {
+                r: 0,
+                g: 255,
+                b: 0,
+                a: 100
+            }
+        },
+        c: Point {
+            coordinate: Coordinate {
+                x: 490,
+                y: 490,
+            },
+            color: RGBA {
+                r: 0,
+                g: 0,
+                b: 255,
+                a: 100
+            }
+        },
+    };
+
+    triangle(&mut buffer, rgb_triangle);
+        //export::ppm(&buffer, "/home/paho/git/renderer/gradient.ppm");
     export::ppm(&buffer, "/Users/photz/repos/renderer/gradient.ppm");
-}
-
-fn optimisations_test() {
-    let width: i32 = 3840;
-    let height: i32 = 1600;
-    let mut buffer = FrameBuffer::new(width as usize, height as usize);
-    let mut x: i32 = 1;
-    const A: i32 = 69;
-    const C: i32 = 33;
-
-    for _i in 0..(10 as u32).pow(7){
-        x = x.wrapping_mul(A).wrapping_add(C) ;
-        let ax = x.abs() % width  ;
-        x = x.wrapping_mul(A).wrapping_add(C) ;
-        let ay = x.abs() % height ;
-        let a = Coordinate {x: ax, y: ay};
-
-        x = x.wrapping_mul(A).wrapping_add(C) ;
-        let bx = x.abs() % width;
-        x = x.wrapping_mul(A).wrapping_add(C) ;
-        let by = x.abs() % height;
-        let b = Coordinate {x: bx, y: by};
-
-        x = x.wrapping_mul(A).wrapping_add(C) ;
-        let r = x as u8;
-        x = x.wrapping_mul(A).wrapping_add(C) ;
-        let g = x as u8;
-        x = x.wrapping_mul(A).wrapping_add(C) ;
-        let _b = x as u8;
-        let color = RGBA {r, g, b: _b, a: 100};
-
-        line(&mut buffer, a, b, color);
-    }
-    //export::ppm(&buffer, "/Users/photz/repos/renderer/gradient.ppm");
-    export::ppm(&buffer, "/home/paho/git/renderer/gradient.ppm");
 }

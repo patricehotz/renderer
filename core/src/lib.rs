@@ -36,6 +36,7 @@ pub struct BBox {
     max: Coordinate,
 }
 
+
 impl FrameBuffer {
     pub fn new(width: usize, height: usize) -> Self {
         Self {width, height, pixels: vec![RGBA{r: 0, g: 0, b: 0, a: 0}; width * height ]}

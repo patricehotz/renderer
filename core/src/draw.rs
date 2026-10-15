@@ -1,5 +1,17 @@
 use crate::{BBox, Coordinate, FrameBuffer, Vec2, RGBA};
 
+
+pub struct Triangle {
+    pub a: Point,
+    pub b: Point,
+    pub c: Point
+}
+
+pub struct Point {
+    pub coordinate: Coordinate,
+    pub color: RGBA,
+}
+
 pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGBA, to_p: Coordinate, to_c: RGBA) {
     let d = Vec2::calc_vector(from_p, to_p);
 
@@ -109,24 +121,32 @@ fn calc_t_max(a: i32, b: i32, max: usize) -> f32 {
     (max as f32 - (a as f32)) / (b - a) as f32
 }
 
-pub fn triangle(buffer: &mut FrameBuffer, a: Coordinate, b: Coordinate, c: Coordinate, color: RGBA) {
-    let b_box = BBox::new(a,b,c);
-    let ab = Vec2::calc_vector(a, b);
-    let ac = Vec2::calc_vector(a, c);
+pub fn triangle(buffer: &mut FrameBuffer, Triangle {a, b, c}: Triangle) {
+    let b_box = BBox::new(a.coordinate,b.coordinate,c.coordinate);
+    let ab = Vec2::calc_vector(a.coordinate, b.coordinate);
+    let ac = Vec2::calc_vector(a.coordinate, c.coordinate);
     let total_area = ab.signed_c_product(ac);
+    if total_area > 1 {return;}
 
     for y in b_box.min.y..b_box.max.y {
         for x in b_box.min.x..b_box.max.x {
             let p = Coordinate {x, y};
-            let pa = Vec2::calc_vector(p, a);
-            let pb = Vec2::calc_vector(p, b);
-            let pc = Vec2::calc_vector(p, c);
+            let pa = Vec2::calc_vector(p, a.coordinate);
+            let pb = Vec2::calc_vector(p, b.coordinate);
+            let pc = Vec2::calc_vector(p, c.coordinate);
 
-            let alpha = pa.signed_c_product(pb) as f32 / total_area as f32;
-            let beta = pb.signed_c_product(pc) as f32 / total_area as f32;
-            let gamma = pc.signed_c_product(pa) as f32 / total_area as f32;
+            let alpha = pb.signed_c_product(pc) as f32 / total_area as f32;
+            let beta = pc.signed_c_product(pa) as f32 / total_area as f32;
+            let gamma = pa.signed_c_product(pb) as f32 / total_area as f32;
 
             if alpha < 0.0 || beta < 0.0 || gamma < 0.0 {continue}
+
+            let color  = RGBA {
+                r: (alpha * a.color.r as f32 + beta * b.color.r as f32 + gamma * c.color.r as f32).round() as u8,
+                g: (alpha * a.color.g as f32 + beta * b.color.g as f32 + gamma * c.color.g as f32).round() as u8,
+                b: (alpha * a.color.b as f32 + beta * b.color.b as f32 + gamma * c.color.b as f32).round() as u8,
+                a: 100
+            };
 
             buffer.set_pixels(Coordinate {x, y}, color)
 
