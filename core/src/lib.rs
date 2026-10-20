@@ -6,4 +6,4 @@ pub mod bbox;
 pub mod coordinate;
 pub mod vec2;
 pub mod framebuffer;
-pub mod rgba;
+pub mod rgb;

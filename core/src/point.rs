@@ -1,13 +1,13 @@
 use crate::coordinate::Coordinate;
-use crate::rgba::RGBA;
+use crate::rgb::RGB;
 
 pub struct Point {
     pub coordinate: Coordinate,
-    pub color: RGBA,
+    pub color: RGB,
 }
 
 impl Point {
-    pub fn new(coordinate: Coordinate, color: RGBA) -> Self {
+    pub fn new(coordinate: Coordinate, color: RGB) -> Self {
         Point {coordinate, color}
     }
 }

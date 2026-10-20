@@ -1,21 +1,20 @@
 use crate::coordinate::Coordinate;
 use crate::framebuffer::FrameBuffer;
-use crate::rgba::RGBA;
+use crate::rgb::RGB;
 use crate::vec2::Vec2;
 
-pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGBA, to_p: Coordinate, to_c: RGBA) {
+pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGB, to_p: Coordinate, to_c: RGB) {
     let d = Vec2::calc_vector(from_p, to_p);
 
     for y in 0..buffer.height as i32 {
         for x in 0..buffer.width as i32 {
-            let pos = Coordinate::new(x,y, 1);
+            let pos = Coordinate::new(x,y, 1.0);
             let v = Vec2::calc_vector(from_p, pos);
             let t: f32 = (d*v) as f32 / (d*d) as f32;
-            let res = RGBA {
+            let res = RGB {
                 r: ((1.0-t) * from_c.r as f32 + t * to_c.r as f32).round() as u8,
                 g: ((1.0-t) * from_c.g as f32 + t * to_c.g as f32).round() as u8,
                 b: ((1.0-t) * from_c.b as f32 + t * to_c.b as f32).round() as u8,
-                a: 100
             };
 
             buffer.set_pixels(pos, res)
@@ -23,7 +22,7 @@ pub fn gradiant(buffer: &mut FrameBuffer, from_p: Coordinate, from_c: RGBA, to_p
     };
 }
 
-pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, color: RGBA)  {
+pub fn line(buffer: &mut FrameBuffer, mut a: Coordinate, mut b: Coordinate, color: RGB)  {
     let line_visible = clip(&mut a,  &mut b, buffer.width -1, buffer.height -1);
 
     if line_visible != true {return;} 
