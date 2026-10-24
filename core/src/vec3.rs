@@ -1,4 +1,4 @@
-use std::ops::Mul;
+use std::ops::{Div, Mul};
 use crate::coordinate::Coordinate;
 
 #[derive(Clone, Copy)]
@@ -68,5 +68,21 @@ impl Mul<f32> for Vec3 {
 
     fn mul(self, rhs: f32) -> Self::Output {
         Vec3{x: rhs * self.x, y: rhs * self.y, z: rhs * self.z}
+    }
+}
+
+impl Div<Vec3> for f32 {
+    type Output = Vec3;
+
+    fn div(self, rhs: Vec3) -> Self::Output {
+        Vec3{x: self / rhs.x, y: self / rhs.y, z: self / rhs.z }
+    }
+}
+
+impl Div<f32> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: f32) -> Self::Output {
+        Vec3{x: self.x / rhs, y: self.y / rhs , z: self.z / rhs }
     }
 }

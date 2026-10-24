@@ -13,7 +13,7 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn load(path: &str, width: usize, height: usize) -> Model {
+    pub fn load(path: &str) -> Model {
         let mut model = Model {v: Vec::new(), f: Vec::new()};
         let file = File::open(path).unwrap();
         let lines = io::BufReader::new(file).lines();
@@ -75,4 +75,12 @@ impl Model {
             p.x = x;
         }
     }
+
+    pub fn pers(&mut self) {
+        const C: f32 = 3.0;
+        for v in &mut self.v {
+            *v = *v/(1.0-v.z/C);
+        }
+    }
+
 }
