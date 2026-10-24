@@ -236,3 +236,15 @@ the wheight where falsley named so at my first try the blend was good but the wr
 but that was fixed quickly
 
 now i also see why i used barycentric coordinates. they give you the weight ofc to to such things as gradients etc.
+
+
+## 20.10.26
+
+**Z-Buffer**
+Was pretty easy actually, had to add z to coordinates etc and while doing that i decided to generally abstract stuff into dedicated files. that took longer than the zbuffer as it is really not hard actually
+its just an extra buffer that holds the current z of each pixel, so when drawing you can just check if the currents pixel z is above the current z in the buffern and there you go you have depth.
+![img_3.png](img_3.png)
+
+
+## 23.10.26
+![img_4.png](img_4.png)

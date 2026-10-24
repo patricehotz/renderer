@@ -7,3 +7,5 @@ pub mod coordinate;
 pub mod vec2;
 pub mod framebuffer;
 pub mod rgb;
+pub mod model;
+pub mod vec3;
