@@ -14,6 +14,11 @@ impl FrameBuffer {
         Self {width, height, pixels: vec![RGB {r: 0, g: 0, b: 0}; width * height ], depth: vec![-1.0; width * height]}
     }
 
+    pub fn clear(&mut self) {
+        self.pixels.fill(RGB::new(0,0,0));
+        self.depth.fill(-1.0)
+    }
+
     pub fn get_pixel(&self, Coordinate {x, y, ..}: Coordinate) -> RGB {
         self.pixels[self.get_index(x, y).unwrap()]
     }

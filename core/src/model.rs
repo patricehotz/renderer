@@ -35,14 +35,17 @@ impl Model {
         model
     }
 
-    pub fn draw (self, buffer: &mut FrameBuffer) {
+    pub fn draw (&mut self, buffer: &mut FrameBuffer) {
         let centre_x = buffer.width as f32 * 0.5;
         let centre_y = buffer.height as f32 * 0.5;
 
-        for f in self.f {
-            let a = Coordinate::new((self.v[f[0]].x * centre_x + centre_x).round() as i32, (self.v[f[0]].y * centre_y * -1.0 + centre_y).round() as i32, self.v[f[0]].z);
-            let b = Coordinate::new((self.v[f[1]].x * centre_x + centre_x).round() as i32, (self.v[f[1]].y * centre_y * -1.0 + centre_y).round() as i32, self.v[f[1]].z);
-            let c = Coordinate::new((self.v[f[2]].x * centre_x + centre_x).round() as i32, (self.v[f[2]].y * centre_y * -1.0 + centre_y).round() as i32, self.v[f[2]].z);
+        for f in &self.f {
+            let va = pers(self.v[f[0]]);
+            let vb = pers(self.v[f[1]]);
+            let vc = pers(self.v[f[2]]);
+            let a = Coordinate::new((va.x * centre_x + centre_x).round() as i32, (va.y * centre_y * -1.0 + centre_y).round() as i32, va.z);
+            let b = Coordinate::new((vb.x * centre_x + centre_x).round() as i32, (vb.y * centre_y * -1.0 + centre_y).round() as i32, vb.z);
+            let c = Coordinate::new((vc.x * centre_x + centre_x).round() as i32, (vc.y * centre_y * -1.0 + centre_y).round() as i32, vc.z);
 
             triangle(
                 buffer,
@@ -80,11 +83,14 @@ impl Model {
         }
     }
 
-    pub fn pers(&mut self) {
-        const C: f32 = 3.0;
-        for v in &mut self.v {
-            *v = *v/(1.0-v.z/C);
-        }
+
+    pub fn clear(&mut self) {
+        self.f = Vec::new();
     }
 
+}
+
+pub fn pers(v: Vec3) -> Vec3{
+    const C: f32 = 3.0;
+    v/(1.0-v.z/C)
 }
