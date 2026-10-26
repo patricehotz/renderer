@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-rand = "0.10.3"
+minifb = "0.29.0"
 renderer-core = { version = "0.1.0", path = "../core" }

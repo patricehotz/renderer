@@ -246,5 +246,12 @@ its just an extra buffer that holds the current z of each pixel, so when drawing
 ![img_3.png](img_3.png)
 
 
-## 23.10.26
+## 26.10.26
+**Rotation and perspective**
+Motivation is still really high as i also already have a cool game idea to implement when the renderer is finished.
+i implemented rotation first. for that i only whatched some videos on essense of linear algebra from 3blue1brown and then i calculated sin cos etc on my own which was fun. 
+perspective was also really intuitive and was no problem.
+as of now im making good progress but im getting a little demotivated documenting everything here.
 ![img_4.png](img_4.png)
+
+

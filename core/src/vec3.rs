@@ -1,4 +1,4 @@
-use std::ops::{Div, Mul};
+use std::ops::{Add, Div, Index, Mul};
 use crate::coordinate::Coordinate;
 
 #[derive(Clone, Copy)]
@@ -7,6 +7,9 @@ pub struct Vec3 {
     pub y: f32,
     pub z: f32,
 }
+
+#[derive(Clone, Copy)]
+pub struct Matrix3(pub [Vec3; 3]);
 
 impl Vec3 {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
@@ -28,6 +31,11 @@ impl Vec3 {
     // pub fn signed_c_product(&self, b: Vec2) -> i32 {
     //     self.x * b.y - self.y * b.x
     // }
+}
+
+impl Index<usize> for Matrix3 {            // makes scores[i] work
+    type Output = Vec3;
+    fn index(&self, i: usize) -> &Vec3 { &self.0[i] }
 }
 
 impl Mul<Vec3> for Vec3 {
@@ -84,5 +92,30 @@ impl Div<f32> for Vec3 {
 
     fn div(self, rhs: f32) -> Self::Output {
         Vec3{x: self.x / rhs, y: self.y / rhs , z: self.z / rhs }
+    }
+}
+
+
+impl Add<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: Vec3) -> Self::Output {
+        Vec3{ x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z }
+    }
+}
+
+impl Mul<Vec3> for Matrix3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        self[0] * rhs.x + self[1] * rhs.y + self[2] * rhs.z
+    }
+}
+
+impl Mul<Matrix3> for Vec3{
+    type Output = Vec3;
+
+    fn mul(self, rhs: Matrix3) -> Self::Output {
+        self.x * rhs[0] + self.y * rhs[1] + self.z * rhs[2]
     }
 }

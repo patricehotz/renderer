@@ -5,7 +5,7 @@ use crate::framebuffer::FrameBuffer;
 use crate::point::Point;
 use crate::rgb::RGB;
 use crate::triangle::{triangle, Triangle};
-use crate::vec3::Vec3;
+use crate::vec3::{Matrix3, Vec3};
 
 pub struct Model {
     v: Vec<Vec3>,
@@ -69,10 +69,14 @@ impl Model {
         for p in &mut self.v {
             let sin =  alpha.to_radians().sin();
             let cos =  alpha.to_radians().cos();
-            let x = p.z * -sin + p.x * cos;
-            let z = p.x * sin + p.z * cos;
-            p.z = z;
-            p.x = x;
+
+            let rotation: Matrix3 = Matrix3([
+                Vec3::new(cos, 0.0, sin),
+                Vec3::new(0.0, 1.0, 0.0),
+                Vec3::new(-sin, 0.0, cos)
+            ]);
+
+            *p = *p * rotation;
         }
     }
 
