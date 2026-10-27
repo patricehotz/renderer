@@ -96,6 +96,6 @@ pub fn project(v: Vec3, width: usize, height: usize) -> Vec3{
     Vec3::new(
         (v.x + 1.) * width as f32 / 2.,
         (-v.y + 1.) * height as f32 / 2. ,
-        (v.z + 1.) * 175.5
+        (v.z + 1.) * 127.5
     )
 }

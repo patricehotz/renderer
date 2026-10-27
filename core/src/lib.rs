@@ -9,3 +9,4 @@ pub mod framebuffer;
 pub mod rgb;
 pub mod model;
 pub mod vec3;
+pub mod vec4;

@@ -15,25 +15,9 @@ impl Vec3 {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Vec3 {x, y, z}
     }
-
-    pub fn calc_vector(a: Coordinate, b: Coordinate) -> Vec3 {
-        Vec3 { x: (b.x  - a.x) as f32, y:  (b.y - a.y) as f32, z: (b.z - a.z) as f32 }
-    }
-
-    // pub fn calc_length(&self) -> i32 {
-    //     ((self.x.pow(2) + self.y.pow(2)) as f32).sqrt().round() as i32
-    // }
-    //
-    // pub fn c_product(&self, b: Vec2) -> u32 {
-    //     (self.x * b.y - self.y * b.x).abs() as u32
-    // }
-    //
-    // pub fn signed_c_product(&self, b: Vec2) -> i32 {
-    //     self.x * b.y - self.y * b.x
-    // }
 }
 
-impl Index<usize> for Matrix3 {            // makes scores[i] work
+impl Index<usize> for Matrix3 {
     type Output = Vec3;
     fn index(&self, i: usize) -> &Vec3 { &self.0[i] }
 }
