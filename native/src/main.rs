@@ -3,8 +3,8 @@ use renderer_core::export::ppm;
 use renderer_core::framebuffer::FrameBuffer;
 use renderer_core::model::Model;
 
-const WIDTH:usize = 1000;
-const HEIGHT: usize = 1000;
+const WIDTH:usize = 700;
+const HEIGHT: usize = 700;
 
 fn main() {
     let mut frame_buffer = FrameBuffer::new(WIDTH, HEIGHT);

@@ -40,27 +40,24 @@ impl Model {
         let centre_y = buffer.height as f32 * 0.5;
 
         for f in &self.f {
-            let va = pers(self.v[f[0]]);
-            let vb = pers(self.v[f[1]]);
-            let vc = pers(self.v[f[2]]);
-            let a = Coordinate::new((va.x * centre_x + centre_x).round() as i32, (va.y * centre_y * -1.0 + centre_y).round() as i32, va.z);
-            let b = Coordinate::new((vb.x * centre_x + centre_x).round() as i32, (vb.y * centre_y * -1.0 + centre_y).round() as i32, vb.z);
-            let c = Coordinate::new((vc.x * centre_x + centre_x).round() as i32, (vc.y * centre_y * -1.0 + centre_y).round() as i32, vc.z);
+            let va = project(pers(self.v[f[0]]), buffer.width, buffer.height);
+            let vb = project(pers(self.v[f[1]]), buffer.width, buffer.height);
+            let vc = project(pers(self.v[f[2]]), buffer.width, buffer.height);
 
             triangle(
                 buffer,
                 Triangle::new(
                     Point::new(
-                        a,
-                        RGB::new_grayscale((127.5 * a.z + 175.5).round() as u8)
+                        Coordinate::new(va.x.round() as i32, va.y.round() as i32, va.z),
+                        RGB::new_grayscale(va.z.round() as u8)
                     ),
                     Point::new(
-                        b,
-                        RGB::new_grayscale((127.5 * b.z + 175.5).round() as u8)
+                        Coordinate::new(vb.x.round() as i32, vb.y.round() as i32, vb.z),
+                        RGB::new_grayscale(vb.z.round() as u8)
                     ),
                     Point::new(
-                        c,
-                        RGB::new_grayscale((127.5 * c.z + 175.5).round() as u8)
+                        Coordinate::new(vc.x.round() as i32, vc.y.round() as i32, vc.z),
+                        RGB::new_grayscale( vc.z.round() as u8)
                     )
                 )
             );
@@ -93,4 +90,12 @@ impl Model {
 pub fn pers(v: Vec3) -> Vec3{
     const C: f32 = 3.0;
     v/(1.0-v.z/C)
+}
+
+pub fn project(v: Vec3, width: usize, height: usize) -> Vec3{
+    Vec3::new(
+        (v.x + 1.) * width as f32 / 2.,
+        (-v.y + 1.) * height as f32 / 2. ,
+        (v.z + 1.) * 175.5
+    )
 }
