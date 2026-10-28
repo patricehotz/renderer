@@ -6,6 +6,7 @@ use crate::point::Point;
 use crate::rgb::RGB;
 use crate::triangle::{triangle, Triangle};
 use crate::vec3::{Matrix3, Vec3};
+use crate::vec4::{Matrix4, Vec4};
 
 pub struct Model {
     v: Vec<Vec3>,
@@ -36,13 +37,15 @@ impl Model {
     }
 
     pub fn draw (&mut self, buffer: &mut FrameBuffer) {
-        let centre_x = buffer.width as f32 * 0.5;
-        let centre_y = buffer.height as f32 * 0.5;
+        let h = buffer.height as f32;
+        let w = buffer.height as f32;
+
+        let viewport = viewport(0., 0., w, h);
 
         for f in &self.f {
-            let va = project(pers(self.v[f[0]]), buffer.width, buffer.height);
-            let vb = project(pers(self.v[f[1]]), buffer.width, buffer.height);
-            let vc = project(pers(self.v[f[2]]), buffer.width, buffer.height);
+            let va = viewport * pers(self.v[f[0]]).extend(1.);
+            let vb = viewport * pers(self.v[f[1]]).extend(1.);
+            let vc = viewport * pers(self.v[f[2]]).extend(1.);
 
             triangle(
                 buffer,
@@ -92,10 +95,11 @@ pub fn pers(v: Vec3) -> Vec3{
     v/(1.0-v.z/C)
 }
 
-pub fn project(v: Vec3, width: usize, height: usize) -> Vec3{
-    Vec3::new(
-        (v.x + 1.) * width as f32 / 2.,
-        (-v.y + 1.) * height as f32 / 2. ,
-        (v.z + 1.) * 127.5
-    )
+pub fn viewport(x: f32, y: f32, w: f32, h: f32) -> Matrix4 {
+     Matrix4([
+        Vec4::new(w * 0.5, 0., 0., 0.),
+        Vec4::new(0., -h * 0.5, 0., 0.),
+        Vec4::new(0., 0., 127.5, 0.),
+        Vec4::new(x + w * 0.5, y + w * 0.5, 127.5, 1.)
+    ])
 }

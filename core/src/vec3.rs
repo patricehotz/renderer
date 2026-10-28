@@ -1,5 +1,6 @@
 use std::ops::{Add, Div, Index, Mul};
 use crate::coordinate::Coordinate;
+use crate::vec4::Vec4;
 
 #[derive(Clone, Copy)]
 pub struct Vec3 {
@@ -14,6 +15,10 @@ pub struct Matrix3(pub [Vec3; 3]);
 impl Vec3 {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Vec3 {x, y, z}
+    }
+
+    pub fn extend(self, w: f32) -> Vec4 {
+        Vec4::new(self.x, self.y, self.z, w)
     }
 }
 
